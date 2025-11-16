@@ -4,6 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "abd1rehman/flask-k8s-app"
         IMAGE_TAG = "latest"
+        KUBE_NAMESPACE = "default"
     }
 
     stages {
