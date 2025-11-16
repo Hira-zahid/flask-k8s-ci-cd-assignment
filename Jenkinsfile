@@ -2,37 +2,39 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "flask-app:latest"
+        IMAGE_NAME = "abd1rehman/flask-k8s-app"
+        IMAGE_TAG = "latest"
         KUBE_NAMESPACE = "default"
     }
 
     stages {
+
         stage('Build Docker Image') {
             steps {
-                script {
-                    docker.build("${IMAGE_NAME}")
-                }
+                bat """
+                docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
+                docker images
+                """
             }
         }
 
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    sh "kubectl apply -f kubernetes/deployment.yaml"
-                    sh "kubectl apply -f kubernetes/service.yaml"
-                }
+                bat """
+                kubectl apply -f kubernetes/deployment.yaml
+                kubectl apply -f kubernetes/service.yaml
+                """
             }
         }
 
         stage('Verify Deployment') {
             steps {
-                script {
-                    sh "kubectl rollout status deployment/flask-deployment"
-                    sh "kubectl get pods"
-                    sh "kubectl get services"
-                }
+                bat """
+                kubectl rollout status deployment/flask-deployment
+                kubectl get pods
+                kubectl get svc
+                """
             }
         }
     }
 }
-git add Jenkinsfile
